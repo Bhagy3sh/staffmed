@@ -1,4 +1,4 @@
-# StaffMed — Pelican Hospital Management System
+# StaffMed — Hospital Management System
 
 A full-stack web application for managing hospital appointments, physician schedules, and patient records. Built for **Pelican Hospital**, StaffMed supports multiple staff roles with role-specific dashboards and workflows.
 
