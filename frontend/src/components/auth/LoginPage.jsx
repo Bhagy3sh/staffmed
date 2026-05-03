@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
+import ThemeSwitch from '../common/ThemeSwitch';
 
 export default function LoginPage() {
   const { login, googleLogin } = useAuth();
+  const { isDark, onThemeToggle } = useTheme();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
@@ -61,16 +64,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-cover bg-center"
+    <div className={`min-h-screen flex items-center justify-center px-4 bg-cover bg-center${isDark ? ' dark' : ''}`}
       style={{ backgroundImage: "url('https://img.freepik.com/free-photo/blurred-abstract-background-interior-view-looking-out-toward-empty-office-lobby-entrance-doors-glass-curtain-wall-with-frame_1339-6363.jpg')" }}>
+      {/* Theme toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeSwitch checked={isDark} onChange={onThemeToggle} />
+      </div>
+
       <div className="w-full max-w-md">
         {/* Logo / header */}
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-black text-white drop-shadow-lg">StaffMed</h1>
-          <p className="text-white/80 text-sm mt-1 drop-shadow">Pelican Hospital Management System</p>
+          <h1 className="text-4xl font-black text-black drop-shadow-lg">StaffMed</h1>
+          <p className="text-black/70 text-sm mt-1 drop-shadow">Pelican Hospital Management System</p>
         </div>
 
-        <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
+        <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700">
           {/* Card header */}
           <div className="px-8 py-6" style={{ backgroundColor: '#1a2744' }}>
             <p className="text-blue-300 text-xs font-bold tracking-widest uppercase">Welcome back</p>
@@ -78,7 +86,7 @@ export default function LoginPage() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="bg-white px-8 py-7 space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 px-8 py-7 space-y-5" noValidate>
             {serverError && (
               <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-600 text-sm font-medium">
                 {serverError}
@@ -98,7 +106,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 placeholder="you@example.com"
                 className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors
-                  ${errors.email ? 'border-red-400 bg-red-50' : 'border-gray-300 focus:border-blue-400 bg-white'}`}
+                  ${errors.email ? 'border-red-400 bg-red-50 dark:bg-red-900/30 dark:text-red-300' : 'border-gray-300 dark:border-gray-600 focus:border-blue-400 bg-white dark:bg-gray-700 dark:text-gray-100'}`}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
@@ -117,7 +125,7 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   placeholder="••••••••"
                   className={`w-full px-4 py-3 pr-11 rounded-xl border text-sm outline-none transition-colors
-                    ${errors.password ? 'border-red-400 bg-red-50' : 'border-gray-300 focus:border-blue-400 bg-white'}`}
+                    ${errors.password ? 'border-red-400 bg-red-50 dark:bg-red-900/30 dark:text-red-300' : 'border-gray-300 dark:border-gray-600 focus:border-blue-400 bg-white dark:bg-gray-700 dark:text-gray-100'}`}
                 />
                 <button
                   type="button"
@@ -151,9 +159,9 @@ export default function LoginPage() {
 
             {/* Divider */}
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-gray-200" />
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600" />
               <span className="text-xs text-gray-400 font-medium">or</span>
-              <div className="flex-1 h-px bg-gray-200" />
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600" />
             </div>
 
             {/* Google Sign-In */}
@@ -169,7 +177,7 @@ export default function LoginPage() {
               />
             </div>
 
-            <p className="text-center text-sm text-gray-500">
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400">
               Don't have an account?{' '}
               <button
                 type="button"

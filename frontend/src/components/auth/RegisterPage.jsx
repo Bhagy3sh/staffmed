@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
+import ThemeSwitch from '../common/ThemeSwitch';
 
 const ROLES = [
   { value: 'patient', label: 'Patient', icon: '🏥', desc: 'Book appointments and manage your health records' },
@@ -15,7 +17,7 @@ const STEPS = ['Role', 'Account', 'Details'];
 function FieldInput({ label, name, type = 'text', placeholder, autoComplete, value, error, onChange }) {
   return (
     <div>
-      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
+      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">{label}</label>
       <input
         type={type}
         name={name}
@@ -24,7 +26,7 @@ function FieldInput({ label, name, type = 'text', placeholder, autoComplete, val
         autoComplete={autoComplete}
         placeholder={placeholder}
         className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors
-          ${error ? 'border-red-400 bg-red-50' : 'border-gray-300 focus:border-blue-400 bg-white'}`}
+          ${error ? 'border-red-400 bg-red-50 dark:bg-red-900/30 dark:text-red-300' : 'border-gray-300 dark:border-gray-600 focus:border-blue-400 bg-white dark:bg-gray-700 dark:text-gray-100'}`}
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
@@ -33,6 +35,7 @@ function FieldInput({ label, name, type = 'text', placeholder, autoComplete, val
 
 export default function RegisterPage() {
   const { register } = useAuth();
+  const { isDark, onThemeToggle } = useTheme();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [role, setRole] = useState('');
@@ -130,15 +133,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-cover bg-center"
+    <div className={`min-h-screen flex items-center justify-center px-4 py-8 bg-cover bg-center${isDark ? ' dark' : ''}`}
       style={{ backgroundImage: "url('https://img.freepik.com/free-photo/blurred-abstract-background-interior-view-looking-out-toward-empty-office-lobby-entrance-doors-glass-curtain-wall-with-frame_1339-6363.jpg')" }}>
+      {/* Theme toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeSwitch checked={isDark} onChange={onThemeToggle} />
+      </div>
+
       <div className="w-full max-w-lg">
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-black text-white drop-shadow-lg">StaffMed</h1>
-          <p className="text-white/80 text-sm mt-1 drop-shadow">Pelican Hospital Management System</p>
+          <h1 className="text-4xl font-black text-black drop-shadow-lg">StaffMed</h1>
+          <p className="text-black/70 text-sm mt-1 drop-shadow">Pelican Hospital Management System</p>
         </div>
 
-        <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
+        <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700">
           {/* Header */}
           <div className="px-8 py-5" style={{ backgroundColor: '#1a2744' }}>
             <p className="text-blue-300 text-xs font-bold tracking-widest uppercase">Create account</p>
@@ -158,7 +166,7 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="bg-white px-8 py-7">
+          <div className="bg-white dark:bg-gray-800 px-8 py-7">
             {serverError && (
               <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-600 text-sm font-medium mb-5">
                 {serverError}
@@ -175,12 +183,12 @@ export default function RegisterPage() {
                     type="button"
                     onClick={() => { setRole(r.value); setErrors({}); }}
                     className={`w-full flex items-center gap-4 px-4 py-4 rounded-xl border-2 text-left transition-all
-                      ${role === r.value ? 'border-blue-900 bg-blue-50' : 'border-gray-200 hover:border-gray-300 bg-white'}`}
+                      ${role === r.value ? 'border-blue-900 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 bg-white dark:bg-gray-700'}`}
                   >
                     <span className="text-2xl">{r.icon}</span>
                     <div>
-                      <p className="font-bold text-gray-900 text-sm">{r.label}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">{r.desc}</p>
+                      <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">{r.label}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{r.desc}</p>
                     </div>
                     <div className={`ml-auto w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0
                       ${role === r.value ? 'border-blue-900 bg-blue-900' : 'border-gray-300'}`}>
@@ -211,7 +219,7 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                       placeholder="••••••••"
                       className={`w-full px-4 py-3 pr-11 rounded-xl border text-sm outline-none transition-colors
-                        ${errors.password ? 'border-red-400 bg-red-50' : 'border-gray-300 focus:border-blue-400 bg-white'}`}
+                        ${errors.password ? 'border-red-400 bg-red-50 dark:bg-red-900/30 dark:text-red-300' : 'border-gray-300 dark:border-gray-600 focus:border-blue-400 bg-white dark:bg-gray-700 dark:text-gray-100'}`}
                     />
                     <button type="button" onClick={() => setShowPassword((v) => !v)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" tabIndex={-1}>
@@ -274,7 +282,7 @@ export default function RegisterPage() {
               </button>
             </div>
 
-            <p className="text-center text-sm text-gray-500 mt-4">
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
               Already have an account?{' '}
               <button type="button" onClick={() => navigate('/login')}
                 className="font-bold underline" style={{ color: '#1a2744' }}>

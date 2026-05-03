@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ThemeSwitch from './common/ThemeSwitch';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
 
 const DEBUG_ROLES = ['patient', 'doctor', 'nurse', 'admin', 'it'];
 
-export default function Navbar({ isDark, onThemeToggle }) {
+export default function Navbar() {
+    const { isDark, onThemeToggle } = useTheme();
     const { user, logout, refreshUser } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();

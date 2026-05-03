@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
+import ThemeSwitch from '../common/ThemeSwitch';
 
 const ROLES = [
   { value: 'patient', label: 'Patient', icon: '🏥', desc: 'Book appointments and manage your health records' },
@@ -12,7 +14,7 @@ const ROLES = [
 function Field({ label, name, value, error, onChange, placeholder }) {
   return (
     <div>
-      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
+      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">{label}</label>
       <input
         type="text"
         name={name}
@@ -20,7 +22,7 @@ function Field({ label, name, value, error, onChange, placeholder }) {
         onChange={onChange}
         placeholder={placeholder}
         className={`w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors
-          ${error ? 'border-red-400 bg-red-50' : 'border-gray-300 focus:border-blue-400'}`}
+          ${error ? 'border-red-400 bg-red-50 dark:bg-red-900/30 dark:text-red-300' : 'border-gray-300 dark:border-gray-600 focus:border-blue-400 dark:bg-gray-700 dark:text-gray-100'}`}
       />
       {error && <p className="text-red-500 text-xs mt-0.5">{error}</p>}
     </div>
@@ -29,6 +31,7 @@ function Field({ label, name, value, error, onChange, placeholder }) {
 
 export default function GoogleOnboarding() {
   const { user, completeOnboarding, logout } = useAuth();
+  const { isDark, onThemeToggle } = useTheme();
   const [step, setStep] = useState(0); // 0 = role, 1 = details
   const [role, setRole] = useState('');
   const [form, setForm] = useState({ specialty: '', department: '', licenseNo: '', employeeId: '' });
@@ -94,8 +97,12 @@ export default function GoogleOnboarding() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
-      <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div className={`min-h-screen flex items-center justify-center px-4 py-8 ${isDark ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Theme toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeSwitch checked={isDark} onChange={onThemeToggle} />
+      </div>
+      <div className="w-full max-w-lg bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-8 py-7" style={{ backgroundColor: '#1a2744' }}>
           <p className="text-blue-300 text-xs font-bold tracking-widest uppercase mb-1">Google Sign-In</p>
@@ -106,18 +113,18 @@ export default function GoogleOnboarding() {
         </div>
 
         {/* Google account info */}
-        <div className="px-8 py-4 bg-blue-50 border-b border-blue-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-black text-sm flex-shrink-0">
+        <div className="px-8 py-4 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-blue-200 dark:bg-blue-800 flex items-center justify-center text-blue-700 dark:text-blue-200 font-black text-sm flex-shrink-0">
             {user?.firstName?.[0]}{user?.lastName?.[0]}
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-800">{user?.firstName} {user?.lastName}</p>
-            <p className="text-xs text-gray-500">{user?.email}</p>
+            <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{user?.firstName} {user?.lastName}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
           </div>
           <span className="ml-auto text-xs font-bold text-blue-600 bg-blue-100 px-2.5 py-1 rounded-full">Google</span>
         </div>
 
-        <div className="px-8 py-6">
+        <div className="px-8 py-6 dark:bg-gray-800">
           {/* Steps indicator */}
           {needsDetails && (
             <div className="flex items-center gap-2 mb-6">
@@ -128,7 +135,7 @@ export default function GoogleOnboarding() {
                     style={i <= step ? { backgroundColor: '#1a2744' } : {}}>
                     {i + 1}
                   </div>
-                  <span className={`text-xs font-bold ${i <= step ? 'text-gray-700' : 'text-gray-400'}`}>{label}</span>
+                  <span className={`text-xs font-bold ${i <= step ? 'text-gray-700 dark:text-gray-200' : 'text-gray-400'}`}>{label}</span>
                   {i < 1 && <div className={`w-8 h-0.5 ${step > i ? 'bg-blue-400' : 'bg-gray-200'}`} />}
                 </div>
               ))}
@@ -144,17 +151,17 @@ export default function GoogleOnboarding() {
           {/* Step 0 — Role selection */}
           {step === 0 && (
             <div className="space-y-3">
-              <p className="text-sm font-bold text-gray-700 mb-3">What is your role at the facility?</p>
+              <p className="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3">What is your role at the facility?</p>
               {ROLES.map((r) => (
                 <button
                   key={r.value}
                   onClick={() => { setRole(r.value); setErrors({}); }}
                   className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl border-2 text-left transition-all
-                    ${role === r.value ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}`}
+                    ${role === r.value ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                 >
                   <span className="text-2xl">{r.icon}</span>
                   <div>
-                    <p className={`font-bold text-sm ${role === r.value ? 'text-blue-700' : 'text-gray-800'}`}>{r.label}</p>
+                    <p className={`font-bold text-sm ${role === r.value ? 'text-blue-700 dark:text-blue-300' : 'text-gray-800 dark:text-gray-100'}`}>{r.label}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{r.desc}</p>
                   </div>
                   {role === r.value && (
@@ -208,7 +215,7 @@ export default function GoogleOnboarding() {
 
           <button
             onClick={logout}
-            className="w-full mt-3 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            className="w-full mt-3 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
           >
             Sign out and use a different account
           </button>

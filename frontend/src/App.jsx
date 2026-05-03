@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -7,6 +6,7 @@ import {
   Outlet,
   useLocation,
 } from 'react-router-dom';
+import { useTheme } from './context/ThemeContext';
 import './App.css';
 import Navbar from './components/Navbar';
 import BookPage from './components/BookPage';
@@ -61,14 +61,15 @@ function AppointmentsRoute() {
 }
 
 // Shared layout shell — Navbar + page content + ChatBot for patients
-function AppShell({ isDark, onThemeToggle }) {
+function AppShell() {
   const { user } = useAuth();
+  const { isDark } = useTheme();
   return (
     <div
       className={`h-screen flex flex-col bg-cover bg-no-repeat bg-fixed${isDark ? ' dark' : ''}`}
       style={{ backgroundImage: isDark ? `url(${darkBg})` : LIGHT_BG }}
     >
-      <Navbar isDark={isDark} onThemeToggle={onThemeToggle} />
+      <Navbar />
       <div className="flex-1 overflow-y-auto">
         <Outlet />
       </div>
@@ -79,8 +80,7 @@ function AppShell({ isDark, onThemeToggle }) {
 
 export default function App() {
   const { user, loading } = useAuth();
-  const [isDark, setIsDark] = useState(false);
-  const onThemeToggle = (e) => setIsDark(e.target.checked);
+  const { isDark, onThemeToggle } = useTheme();
 
   if (loading) {
     return (
@@ -104,7 +104,7 @@ export default function App() {
         <Route
           element={
             <RequireAuth>
-              <AppShell isDark={isDark} onThemeToggle={onThemeToggle} />
+              <AppShell />
             </RequireAuth>
           }
         >
