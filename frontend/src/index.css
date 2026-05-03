@@ -1,0 +1,15 @@
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+body {
+  min-height: 100vh;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden; /* Prevents horizontal scrolling caused by overflow */
+}
