@@ -4,6 +4,9 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import ThemeSwitch from '../common/ThemeSwitch';
+import darkBg from '../../assets/dark_bg.png';
+
+const LIGHT_BG = "url('https://img.freepik.com/free-photo/blurred-abstract-background-interior-view-looking-out-toward-empty-office-lobby-entrance-doors-glass-curtain-wall-with-frame_1339-6363.jpg')";
 
 export default function LoginPage() {
   const { login, googleLogin } = useAuth();
@@ -65,7 +68,7 @@ export default function LoginPage() {
 
   return (
     <div className={`min-h-screen flex items-center justify-center px-4 bg-cover bg-center${isDark ? ' dark' : ''}`}
-      style={{ backgroundImage: "url('https://img.freepik.com/free-photo/blurred-abstract-background-interior-view-looking-out-toward-empty-office-lobby-entrance-doors-glass-curtain-wall-with-frame_1339-6363.jpg')" }}>
+      style={{ backgroundImage: isDark ? `url(${darkBg})` : LIGHT_BG }}>
       {/* Theme toggle */}
       <div className="fixed top-4 right-4 z-50">
         <ThemeSwitch checked={isDark} onChange={onThemeToggle} />
