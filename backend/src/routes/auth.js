@@ -198,6 +198,10 @@ router.post('/google', [
 
     if (!email) return res.status(400).json({ message: 'No email returned from Google' });
 
+    // Ensure names meet minimum length requirement
+    const firstName = (given_name || '').trim().length >= 2 ? given_name.trim() : 'Google';
+    const lastName = (family_name || '').trim().length >= 2 ? family_name.trim() : 'User';
+
     // Find existing user or create a new patient account
     let user = await User.findOne({ email: email.toLowerCase() });
 
@@ -208,8 +212,8 @@ router.post('/google', [
     } else {
       // New Google user — create with placeholder role, prompt onboarding
       user = await User.create({
-        firstName: given_name || 'Google',
-        lastName: family_name || 'User',
+        firstName,
+        lastName,
         email: email.toLowerCase(),
         password: `google_${googleId}_${Date.now()}`,
         role: 'patient',
@@ -220,9 +224,17 @@ router.post('/google', [
     const token = generateToken(user._id);
     res.json({ token, user: safeUserFields(user) });
   } catch (error) {
-    console.error('Google auth error:', error);
-    if (error.message?.includes('Invalid token')) {
-      return res.status(401).json({ message: 'Invalid Google token. Please try again.' });
+    console.error('Google auth error:', error.message);
+    const msg = error.message || '';
+    if (
+      msg.includes('Invalid token') ||
+      msg.includes('Token used too') ||
+      msg.includes('Wrong recipient') ||
+      msg.includes('Invalid issuer') ||
+      msg.includes('Wrong number of segments') ||
+      msg.includes('No pem found')
+    ) {
+      return res.status(401).json({ message: 'Invalid or expired Google token. Please try again.' });
     }
     res.status(500).json({ message: 'Server error during Google authentication' });
   }
